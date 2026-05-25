@@ -14,37 +14,42 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSignup =async (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
 
-  const formData = new FormData(e.target);
-  const result = Object.fromEntries(formData.entries());
-  console.log(result)
+    const formData = new FormData(e.target);
+    const result = Object.fromEntries(formData.entries());
+    console.log(result)
 
-const { data, error } = await authClient.signUp.email({
-    name:result.name,
-    email: result.email,
-    password: result.password,
-    image: result.imageurl
+    const { data, error } = await authClient.signUp.email({
+        name: result.name,
+        email: result.email,
+        password: result.password,
+        image: result.imageurl
+    });
 
-});
-
-if(data){
-  toast.success("signup successfull")
-}
-   
+    if (data) {
+      toast.success("signup successfull")
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-950 via-violet-900 to-purple-800 px-4">
+    // Background dynamic canvas dark mode border setup e anlam (bg-slate-950)
+    <div className="min-h-screen flex items-center justify-center bg-slate-950 px-4 relative overflow-hidden">
+      
+      {/* Background glow effects premium interface er jonno */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8">
+      {/* Main Glassmorphic card block with slate colors */}
+      <div className="w-full max-w-md bg-slate-900/40 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-8 shadow-2xl relative z-10">
 
-        <h1 className="text-3xl font-bold text-white text-center mb-2">
+        {/* Text color updated to high-contrast white and subtle text-slate-400 */}
+        <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-500 bg-clip-text text-transparent text-center mb-2">
           Create Account
         </h1>
 
-        <p className="text-violet-200 text-center mb-6 text-sm">
+        <p className="text-slate-400 text-center mb-6 text-sm">
           Start your career journey
         </p>
 
@@ -52,47 +57,52 @@ if(data){
 
           <input
             type="text"
+            name="name"
             placeholder="Full Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl bg-white/10 text-white placeholder-violet-300 outline-none border border-white/10"
+            // Slate inputs with indigo focused borders
+            className="w-full px-4 py-3 rounded-xl bg-slate-950 text-slate-100 placeholder-slate-500 outline-none border border-slate-800/80 focus:border-indigo-500/50 transition-all"
           />
 
           <input
             type="email"
+            name="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl bg-white/10 text-white placeholder-violet-300 outline-none border border-white/10"
+            className="w-full px-4 py-3 rounded-xl bg-slate-950 text-slate-100 placeholder-slate-500 outline-none border border-slate-800/80 focus:border-indigo-500/50 transition-all"
           />
 
           <input
             type="password"
+            name="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl bg-white/10 text-white placeholder-violet-300 outline-none border border-white/10"
+            className="w-full px-4 py-3 rounded-xl bg-slate-950 text-slate-100 placeholder-slate-500 outline-none border border-slate-800/80 focus:border-indigo-500/50 transition-all"
           />
-       <input
-  type="text"
-  placeholder="image url"
-  value={image}
-  onChange={(e) => setImag(e.target.value)}
-  className="w-full px-4 py-3 rounded-xl bg-white/10 text-white placeholder-violet-300 outline-none border border-white/10"
-/>
 
+          <input
+            type="text"
+            name="imageurl" 
+            placeholder="Image URL"
+            className="w-full px-4 py-3 rounded-xl bg-slate-950 text-slate-100 placeholder-slate-500 outline-none border border-slate-800/80 focus:border-indigo-500/50 transition-all"
+          />
+
+          {/* Indigo primary button setup */}
           <button
             type="submit"
-            className="w-full bg-violet-600 hover:bg-violet-500 text-white py-3 rounded-xl font-medium transition"
+            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl font-medium shadow-lg shadow-indigo-600/20 transition-all duration-300 transform hover:-translate-y-0.5"
           >
             Sign Up
           </button>
 
         </form>
 
-        <p className="text-center text-violet-200 text-sm mt-5">
+        <p className="text-center text-slate-400 text-sm mt-5">
           Already have an account?{" "}
-          <Link href="/login" className="text-white underline">
+          <Link href="/login" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4 transition">
             Login
           </Link>
         </p>

@@ -1,25 +1,54 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Briefcase, Menu, X, Search } from "lucide-react";
+import { authClient } from "../lib/auth-client";
+import Image from "next/image";
 
 const navLinks = [
-  { label: "Find Jobs",  href: "/jobs" },
-  { label: "Add Jobs",  href: "/add" },
-  { label: "Salaries",   href: "/salaries" },
+  { label: "Find Jobs", href: "/jobs" },
+  { label: "Add Jobs", href: "/add" },
+  { label: "Salaries", href: "/salaries" },
 ];
 
 export default function Navbar() {
-  const [menuOpen, setMenuOpen]     = useState(false);
-  const [scrolled, setScrolled]     = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [session, setSession] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const pathname = usePathname();
 
+  // scroll effect
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // session load
+  useEffect(() => {
+    const loadSession = async () => {
+      try {
+        const { data, error } = await authClient.getSession();
+
+        if (error) {
+          setSession(null);
+        } else {
+          setSession(data || null);
+        }
+      } catch (err) {
+        console.log("Session error:", err);
+        setSession(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadSession();
   }, []);
 
   return (
@@ -35,10 +64,10 @@ export default function Navbar() {
             {/* Logo */}
             <Link
               href="/"
-              className="flex items-center gap-2 text-white font-semibold text-lg tracking-tight flex-shrink-0"
+              className="flex items-center gap-2 text-white font-semibold text-lg"
             >
               <span className="w-8 h-8 rounded-lg bg-violet-500 flex items-center justify-center">
-                <Briefcase className="text-white w-4 h-4" />
+                <Briefcase className="w-4 h-4 text-white" />
               </span>
               Hire<span className="text-violet-300">Now</span>
             </Link>
@@ -47,141 +76,132 @@ export default function Navbar() {
             <nav className="hidden md:flex items-center gap-1">
               {navLinks.map((link) => {
                 const active = pathname === link.href;
+
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`relative text-sm px-4 py-2 rounded-lg transition-all duration-150 ${
+                    className={`px-4 py-2 rounded-lg text-sm transition-all ${
                       active
-                        ? "text-white bg-white/10 font-medium"
+                        ? "text-white bg-white/10"
                         : "text-violet-300 hover:text-white hover:bg-white/10"
                     }`}
                   >
                     {link.label}
-                    {active && (
-                      <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-violet-400" />
-                    )}
                   </Link>
                 );
               })}
             </nav>
 
-            {/* Right actions */}
+            {/* Right side */}
             <div className="hidden md:flex items-center gap-2">
+
               <button
                 onClick={() => setSearchOpen(true)}
-                aria-label="Search"
-                className="w-9 h-9 flex items-center justify-center rounded-lg text-violet-300 hover:text-white hover:bg-white/10 transition-all"
+                className="w-9 h-9 flex items-center justify-center text-violet-300 hover:text-white hover:bg-white/10 rounded-lg"
               >
                 <Search className="w-4 h-4" />
               </button>
+
               <span className="w-px h-5 bg-violet-700 mx-1" />
-              <Link
-                href="/login"
-                className="text-sm text-violet-200 hover:text-white px-4 py-2 rounded-lg hover:bg-white/10 transition-all"
-              >
-                Log in
-              </Link>
-              <Link
-                href="/signup"
-                className="text-sm font-medium text-white bg-violet-500 hover:bg-violet-400 px-4 py-2 rounded-lg transition-all"
-              >
-              SignUp
-              </Link>
+
+              {/* SESSION UI */}
+              {loading ? (
+                <p className="text-violet-200 text-sm">Loading...</p>
+              ) : session?.user ? (
+                <div className="flex items-center gap-2">
+
+                  <span className="text-white text-sm px-3 py-1 bg-white/10 rounded-lg">
+                    {session.user.name}
+                  </span>
+
+                  {session.user.image && (
+                    <Image
+                      src={session.user.image || ""}
+                      height={40}
+                      width={40}
+                      alt="user"
+                      className="rounded-full"
+                    />
+                  )}
+
+                </div>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="text-sm text-violet-200 hover:text-white px-4 py-2 rounded-lg hover:bg-white/10"
+                  >
+                    Login
+                  </Link>
+
+                  <Link
+                    href="/signup"
+                    className="text-sm font-medium text-white bg-violet-500 hover:bg-violet-400 px-4 py-2 rounded-lg"
+                  >
+                    SignUp
+                  </Link>
+                </>
+              )}
             </div>
 
-            {/* Mobile icons */}
+            {/* Mobile menu */}
             <div className="flex md:hidden items-center gap-2">
               <button
                 onClick={() => setSearchOpen(true)}
-                aria-label="Search"
-                className="w-9 h-9 flex items-center justify-center rounded-lg text-violet-300 hover:text-white hover:bg-white/10"
+                className="w-9 h-9 flex items-center justify-center text-violet-300"
               >
                 <Search className="w-4 h-4" />
               </button>
+
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
-                aria-label="Toggle menu"
-                className="w-9 h-9 flex items-center justify-center rounded-lg text-violet-300 hover:text-white hover:bg-white/10 transition-all"
+                className="w-9 h-9 flex items-center justify-center text-violet-300"
               >
-                {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                {menuOpen ? <X /> : <Menu />}
               </button>
             </div>
 
           </div>
         </div>
 
-        {/* Mobile dropdown */}
+        {/* MOBILE MENU */}
         {menuOpen && (
-          <div className="md:hidden border-t border-violet-800 bg-[#1E0E4E] px-4 py-4 flex flex-col gap-1">
+          <div className="md:hidden bg-[#1E0E4E] border-t border-violet-800 px-4 py-4">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className={`text-sm px-4 py-2.5 rounded-lg transition-all ${
-                  pathname === link.href
-                    ? "text-white bg-white/10 font-medium"
-                    : "text-violet-300 hover:text-white hover:bg-white/10"
-                }`}
+                className="block px-4 py-2 text-violet-300 hover:text-white hover:bg-white/10 rounded-lg"
               >
                 {link.label}
               </Link>
             ))}
-            <div className="flex gap-2 mt-3 pt-3 border-t border-violet-800">
-              <Link
-                href="/login"
-                onClick={() => setMenuOpen(false)}
-                className="flex-1 text-center text-sm text-violet-200 border border-violet-600 py-2.5 rounded-lg hover:bg-white/10 transition-all"
-              >
-                Log in
-              </Link>
-              <Link
-                href="/post-job"
-                onClick={() => setMenuOpen(false)}
-                className="flex-1 text-center text-sm font-medium text-white bg-violet-500 hover:bg-violet-400 py-2.5 rounded-lg transition-all"
-              >
-                Post a job
-              </Link>
-            </div>
           </div>
         )}
       </header>
 
-      {/* Search overlay */}
+      {/* SEARCH MODAL */}
       {searchOpen && (
         <div
-          className="fixed inset-0 z-[100] bg-black/60 flex items-start justify-center pt-24 px-4"
+          className="fixed inset-0 bg-black/60 flex items-start justify-center pt-24 px-4 z-[100]"
           onClick={() => setSearchOpen(false)}
         >
           <div
-            className="w-full max-w-xl bg-white rounded-2xl overflow-hidden"
+            className="bg-white w-full max-w-xl rounded-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100">
-              <Search className="text-violet-500 w-4 h-4 flex-shrink-0" />
+            <div className="flex items-center gap-2 p-3 border-b">
+              <Search className="w-4 h-4 text-violet-500" />
               <input
                 autoFocus
-                type="text"
-                placeholder="Search jobs, companies, skills..."
-                className="flex-1 text-sm text-gray-800 outline-none placeholder-gray-400"
+                placeholder="Search jobs..."
+                className="flex-1 outline-none text-sm"
               />
-              <button onClick={() => setSearchOpen(false)} className="text-gray-400 hover:text-gray-600">
+              <button onClick={() => setSearchOpen(false)}>
                 <X className="w-4 h-4" />
               </button>
-            </div>
-            <div className="px-4 py-3">
-              <p className="text-xs text-gray-400 mb-2">Popular searches</p>
-              <div className="flex flex-wrap gap-2">
-                {["React Developer", "Next.js", "MERN Stack", "Remote", "Node.js"].map((s) => (
-                  <span
-                    key={s}
-                    className="text-xs px-3 py-1.5 bg-violet-50 text-violet-700 border border-violet-200 rounded-full cursor-pointer hover:bg-violet-100 transition-all"
-                  >
-                    {s}
-                  </span>
-                ))}
-              </div>
             </div>
           </div>
         </div>
