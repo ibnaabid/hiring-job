@@ -6,7 +6,7 @@ import { Briefcase, Menu, X, Search } from "lucide-react";
 
 const navLinks = [
   { label: "Find Jobs",  href: "/jobs" },
-  { label: "Companies",  href: "/companies" },
+  { label: "Add Jobs",  href: "/add" },
   { label: "Salaries",   href: "/salaries" },
 ];
 
@@ -83,10 +83,10 @@ export default function Navbar() {
                 Log in
               </Link>
               <Link
-                href="/post-job"
+                href="/signup"
                 className="text-sm font-medium text-white bg-violet-500 hover:bg-violet-400 px-4 py-2 rounded-lg transition-all"
               >
-                Post a job
+              SignUp
               </Link>
             </div>
 
