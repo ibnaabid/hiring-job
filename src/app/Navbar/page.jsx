@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Briefcase, Menu, X, Search } from "lucide-react";
 import { authClient } from "../lib/auth-client";
 import Image from "next/image";
+// import { useRouter } from "next/router";
 
 const navLinks = [
   { label: "Find Jobs", href: "/jobs" },
@@ -21,6 +22,8 @@ export default function Navbar() {
   const [loading, setLoading] = useState(true);
 
   const pathname = usePathname();
+
+  const router = useRouter()
 
   // scroll effect
   useEffect(() => {
@@ -51,6 +54,18 @@ export default function Navbar() {
     loadSession();
   }, []);
 
+
+const logoutHandler = async () => {
+  const { error } = await authClient.signOut();
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  setSession(null);
+  router.refresh("/")
+};
   return (
     <>
       <header
@@ -124,6 +139,13 @@ export default function Navbar() {
                       className="rounded-full"
                     />
                   )}
+                  <button className="font-bold text-white btn btn-error"
+                   onClick={logoutHandler}>
+                    Log Out
+
+  
+                    </button>
+                
 
                 </div>
               ) : (

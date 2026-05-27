@@ -14,6 +14,8 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+ 
+
   const handleSignup = async (e) => {
     e.preventDefault();
 
@@ -31,6 +33,7 @@ export default function SignupPage() {
     if (data) {
       toast.success("signup successfull")
     }
+    router.refresh("/")
   };
 
   return (
