@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Briefcase } from "lucide-react";
 import toast from "react-hot-toast";
+import { redirect } from "next/navigation";
 
 const AddJob = () => {
   const [loading, setLoading] = useState(false);
@@ -25,10 +26,11 @@ const AddJob = () => {
       });
 
       const data = await res.json();
-console.log(data)
+
       if (res.ok) {
         toast.success("Job Posted Successfully 🚀");
         e.target.reset();
+        redirect("/my-jobs")
       } else {
         toast.error("Something went wrong!");
       }

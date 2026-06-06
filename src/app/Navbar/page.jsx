@@ -11,6 +11,7 @@ const navLinks = [
   { label: "Find Jobs", href: "/jobs" },
   { label: "Add Jobs", href: "/add" },
   { label: "Apply", href: "/apply" },
+    { label: "Dashboard", href: "/Dashboard" },
 ];
 
 export default function Navbar() {
@@ -123,15 +124,20 @@ export default function Navbar() {
                   {session.user.name}
                 </span>
 
-                {session.user.image && (
-                  <Image
-                    src={session.user.image}
-                    alt="user"
-                    width={40}
-                    height={40}
-                    className="rounded-full"
-                  />
-                )}
+           {session?.user?.image ? (
+  <Image
+    src={session?.user?.image}
+    alt="user"
+    width={40}
+    height={40}
+    className="rounded-full border-2 border-violet-400"
+  />
+) : (
+  // image না থাকলে name এর first letter দেখাবে
+  <div className="w-10 h-10 rounded-full bg-violet-500 flex items-center justify-center text-white font-bold text-sm border-2 border-violet-400">
+    {session.user.name?.[0]?.toUpperCase()}
+  </div>
+)}
 
                 <button
                   onClick={logoutHandler}

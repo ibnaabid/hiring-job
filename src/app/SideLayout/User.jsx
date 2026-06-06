@@ -19,7 +19,7 @@ const User = () => {
       </div>
 
       {/* Stats Cards */}
-      {/* <div className="grid md:grid-cols-4 gap-6">
+       <div className="grid md:grid-cols-4 gap-6">
         <div className="bg-indigo-600 text-white p-6 rounded-2xl shadow-lg">
           <h3 className="text-lg">Total Jobs</h3>
           <p className="text-4xl font-bold mt-2">12</p>
@@ -38,9 +38,9 @@ const User = () => {
         <div className="bg-purple-600 text-white p-6 rounded-2xl shadow-lg">
           <h3 className="text-lg">Messages</h3>
           <p className="text-4xl font-bold mt-2">21</p>
-        </div> */}
+        </div> 
       </div>
-    // </div>
+   </div>
   );
 };
 
