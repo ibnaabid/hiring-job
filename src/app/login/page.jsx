@@ -31,6 +31,7 @@ export default function LoginPage() {
 
     if (data) {
       toast.success("Login successful!");
+      router.refresh()
       router.push("/"); // Login por code dynamic matrix dashboard ba home route-e pathiye dibe
     }
   };

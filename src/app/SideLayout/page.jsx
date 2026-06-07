@@ -8,6 +8,7 @@ import {
   Users,
   Settings,
   LogOut,
+  UserRoundPen,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -49,6 +50,15 @@ export default function Sidebar() {
           <FileText size={20} />
           My Jobs
         </Link>
+
+          <Link
+          href="/Dashboard/Company"
+          className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-900 hover:text-white transition"
+        >
+         <UserRoundPen size={20} /> 
+Company        </Link>
+        
+        
 
         <Link
           href="/Dashboard/applicants"
