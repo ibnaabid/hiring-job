@@ -3,8 +3,13 @@ import Link from "next/link";
 import { Button } from "@heroui/react";
 import { MapPin, Building2, DollarSign, CalendarDays } from "lucide-react";
 
+import { headers } from "next/headers";
+import { auth } from "@/app/lib/auth";
+
 const Dynamic = async ({ params }) => {
   const { id } = await params;
+
+  
 
   const res = await fetch(`http://localhost:5000/jobs/${id}`, {
     cache: "no-store",
@@ -17,9 +22,13 @@ const Dynamic = async ({ params }) => {
       <div className="mx-auto max-w-5xl">
         <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-md">
 
+          {/* Hero Section */}
           <div className="relative h-[320px] w-full">
             <Image
-              src={data?.image || "https://images.unsplash.com/photo-1521791136064-7986c2920216"}
+              src={
+                data?.image ||
+                "https://images.unsplash.com/photo-1521791136064-7986c2920216"
+              }
               alt={data?.title}
               fill
               className="object-cover"
@@ -28,16 +37,12 @@ const Dynamic = async ({ params }) => {
 
             <div className="absolute bottom-6 left-6">
               <h1 className="text-4xl font-bold">{data?.title}</h1>
-              <p className="mt-2 text-slate-300">
-                {data?.company}
-              </p>
+              <p className="mt-2 text-slate-300">{data?.company}</p>
             </div>
           </div>
 
           <div className="p-8">
-
             <div className="grid md:grid-cols-3 gap-4 mb-8">
-
               <div className="bg-white/5 p-4 rounded-xl border border-white/10">
                 <Building2 className="mb-2" />
                 <p className="text-sm text-slate-400">Company</p>
@@ -55,7 +60,6 @@ const Dynamic = async ({ params }) => {
                 <p className="text-sm text-slate-400">Salary</p>
                 <p>{data?.salary}</p>
               </div>
-
             </div>
 
             <div className="mb-8">
@@ -81,9 +85,11 @@ const Dynamic = async ({ params }) => {
                   </Button>
                 </Link>
 
-                <Button color="primary">
-                  Apply Now
-                </Button>
+                <Link href={`/apply/${id}`}>
+                  <Button color="primary">
+                    Apply Now
+                  </Button>
+                </Link>
               </div>
             </div>
 
